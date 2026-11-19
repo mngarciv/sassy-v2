@@ -89,6 +89,10 @@ flotantes en píldora de Vercel (`components/label.tsx`) en vistas nuevas.
 ## Estado (actualizar al cerrar cada sesión)
 
 - [x] Tema dark global, utilidades glass, `ProductCard`, grilla, paginación por cursor, layout `/search`.
-- [ ] Navbar (logo `public/logo-SS.png` aún no está en el repo), menú con fallback.
+- [x] Navbar: logo `public/logo-SS.png` (recreado desde el avatar de IG: Bebas Neue sobre
+      círculo negro; reemplazar por el original si aparece) vía `components/logo-mark.tsx`,
+      franja `announcement-bar.tsx` con sellos de IG, menú Shopify con `FALLBACK_MENU`
+      (`lib/constants.ts`), `nav-links.tsx` (client, estado activo), buscador y menú móvil
+      oscuros. Favoritos/Perfil son iconos deshabilitados ("próximamente") hasta tener rutas.
 - [ ] Hero con stack rotativo · carrusel Embla (`pnpm add embla-carousel-react`) · footer.
 - [ ] Página de producto y carrito re-estilizados (siguen con `GridTileImage` del template).
