@@ -15,16 +15,19 @@ function PathFilterItem({ item }: { item: PathFilterItem }) {
   const DynamicTag = active ? "p" : Link;
 
   newParams.delete("q");
+  // El cursor pertenece a la colección actual: al cambiar, se vuelve a la pág. 1.
+  newParams.delete("after");
+  newParams.delete("before");
 
   return (
-    <li className="mt-2 flex text-black dark:text-white" key={item.title}>
+    <li className="flex" key={item.title}>
       <DynamicTag
         href={createUrl(item.path, newParams)}
         className={clsx(
-          "w-full text-sm underline-offset-4 hover:underline dark:hover:text-neutral-100",
-          {
-            "underline underline-offset-4": active,
-          },
+          "-mx-3 w-full rounded-lg px-3 py-1.5 text-sm transition-colors duration-200",
+          active
+            ? "bg-white/10 font-medium text-white"
+            : "text-neutral-400 hover:bg-white/5 hover:text-white",
         )}
       >
         {item.title}
@@ -48,16 +51,16 @@ function SortFilterItem({ item }: { item: SortFilterItem }) {
   const DynamicTag = active ? "p" : Link;
 
   return (
-    <li
-      className="mt-2 flex text-sm text-black dark:text-white"
-      key={item.title}
-    >
+    <li className="flex text-sm" key={item.title}>
       <DynamicTag
         prefetch={!active ? false : undefined}
         href={href}
-        className={clsx("w-full hover:underline hover:underline-offset-4", {
-          "underline underline-offset-4": active,
-        })}
+        className={clsx(
+          "-mx-3 w-full rounded-lg px-3 py-1.5 transition-colors duration-200",
+          active
+            ? "bg-white/10 font-medium text-white"
+            : "text-neutral-400 hover:bg-white/5 hover:text-white",
+        )}
       >
         {item.title}
       </DynamicTag>

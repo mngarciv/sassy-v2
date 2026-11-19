@@ -3,19 +3,74 @@
 @plugin "@tailwindcss/container-queries";
 @plugin "@tailwindcss/typography";
 
+/* El sitio es solo dark: `dark:` se activa con la clase .dark en <html>
+   (puesta en app/layout.tsx), no con la preferencia del sistema. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* SASSY SNKRS — Dark Editorial & Premium Glassmorphism
+   Ver CLAUDE.md para el sistema de diseño completo. */
+@theme {
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  --animate-fadeIn: fadeIn 0.5s ease-out both;
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
 @layer base {
   *,
   ::after,
   ::before,
   ::backdrop,
   ::file-selector-button {
-    border-color: var(--color-gray-200, currentColor);
+    border-color: rgb(255 255 255 / 0.1);
+  }
+
+  html {
+    color-scheme: dark;
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+@layer components {
+  /* Panel de cristal estándar (filtros, chips, tarjetas flotantes) */
+  .glass {
+    background: linear-gradient(
+      180deg,
+      rgb(23 23 23 / 0.55),
+      rgb(10 10 10 / 0.65)
+    );
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    border: 1px solid rgb(255 255 255 / 0.1);
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.04) inset,
+      0 20px 50px -30px rgb(0 0 0 / 0.8);
+  }
+
+  /* Variante más opaca (navbar, modales, carrito) */
+  .glass-strong {
+    background: linear-gradient(180deg, rgb(10 10 10 / 0.8), rgb(0 0 0 / 0.85));
+    backdrop-filter: blur(24px) saturate(150%);
+    -webkit-backdrop-filter: blur(24px) saturate(150%);
+    border: 1px solid rgb(255 255 255 / 0.1);
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.05) inset,
+      0 30px 60px -30px rgb(0 0 0 / 0.9);
+  }
+
+  /* Ruido fotográfico sutil para fondos de hero/secciones */
+  .grain {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    mix-blend-mode: overlay;
   }
 }
 
@@ -28,5 +83,5 @@
 a,
 input,
 button {
-  @apply focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-50 dark:focus-visible:ring-neutral-600 dark:focus-visible:ring-offset-neutral-900;
+  @apply focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950 focus-visible:outline-hidden;
 }

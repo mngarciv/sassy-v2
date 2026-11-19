@@ -1,3 +1,4 @@
+import pageInfoFragment from "../fragments/page-info";
 import productFragment from "../fragments/product";
 import seoFragment from "../fragments/seo";
 
@@ -53,4 +54,38 @@ export const getCollectionProductsQuery = /* GraphQL */ `
     }
   }
   ${productFragment}
+`;
+
+export const getCollectionProductsPageQuery = /* GraphQL */ `
+  query getCollectionProductsPage(
+    $handle: String!
+    $sortKey: ProductCollectionSortKeys
+    $reverse: Boolean
+    $first: Int
+    $after: String
+    $last: Int
+    $before: String
+  ) {
+    collection(handle: $handle) {
+      products(
+        sortKey: $sortKey
+        reverse: $reverse
+        first: $first
+        after: $after
+        last: $last
+        before: $before
+      ) {
+        edges {
+          node {
+            ...product
+          }
+        }
+        pageInfo {
+          ...pageInfo
+        }
+      }
+    }
+  }
+  ${productFragment}
+  ${pageInfoFragment}
 `;

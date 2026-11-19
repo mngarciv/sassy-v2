@@ -27,11 +27,11 @@ export default function FilterList({
     <>
       <nav>
         {title ? (
-          <h3 className="hidden text-xs text-neutral-500 md:block dark:text-neutral-400">
+          <h3 className="mb-3 hidden font-mono text-[10px] tracking-widest text-neutral-500 uppercase md:block">
             {title}
           </h3>
         ) : null}
-        <ul className="hidden md:block">
+        <ul className="hidden space-y-0.5 md:block">
           <Suspense fallback={null}>
             <FilterItemList list={list} />
           </Suspense>

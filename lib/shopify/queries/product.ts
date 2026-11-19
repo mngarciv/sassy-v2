@@ -1,3 +1,4 @@
+import pageInfoFragment from "../fragments/page-info";
 import productFragment from "../fragments/product";
 
 export const getProductQuery = /* GraphQL */ `
@@ -33,4 +34,37 @@ export const getProductRecommendationsQuery = /* GraphQL */ `
     }
   }
   ${productFragment}
+`;
+
+export const getProductsPageQuery = /* GraphQL */ `
+  query getProductsPage(
+    $sortKey: ProductSortKeys
+    $reverse: Boolean
+    $query: String
+    $first: Int
+    $after: String
+    $last: Int
+    $before: String
+  ) {
+    products(
+      sortKey: $sortKey
+      reverse: $reverse
+      query: $query
+      first: $first
+      after: $after
+      last: $last
+      before: $before
+    ) {
+      edges {
+        node {
+          ...product
+        }
+      }
+      pageInfo {
+        ...pageInfo
+      }
+    }
+  }
+  ${productFragment}
+  ${pageInfoFragment}
 `;

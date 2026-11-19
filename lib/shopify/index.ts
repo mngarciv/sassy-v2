@@ -1,5 +1,6 @@
 import {
   HIDDEN_PRODUCT_TAG,
+  PRODUCTS_PAGE_SIZE,
   SHOPIFY_GRAPHQL_API_ENDPOINT,
   TAGS,
 } from "lib/constants";
@@ -20,6 +21,7 @@ import {
 } from "./mutations/cart";
 import { getCartQuery } from "./queries/cart";
 import {
+  getCollectionProductsPageQuery,
   getCollectionProductsQuery,
   getCollectionQuery,
   getCollectionsQuery,
@@ -29,6 +31,7 @@ import { getPageQuery, getPagesQuery } from "./queries/page";
 import {
   getProductQuery,
   getProductRecommendationsQuery,
+  getProductsPageQuery,
   getProductsQuery,
 } from "./queries/product";
 import {
@@ -38,13 +41,16 @@ import {
   Image,
   Menu,
   Page,
+  PageInfo,
   Product,
+  ProductPage,
   ShopifyAddToCartOperation,
   ShopifyCart,
   ShopifyCartOperation,
   ShopifyCollection,
   ShopifyCollectionOperation,
   ShopifyCollectionProductsOperation,
+  ShopifyCollectionProductsPageOperation,
   ShopifyCollectionsOperation,
   ShopifyCreateCartOperation,
   ShopifyMenuOperation,
@@ -52,8 +58,10 @@ import {
   ShopifyPagesOperation,
   ShopifyProduct,
   ShopifyProductOperation,
+  ShopifyPaginationVariables,
   ShopifyProductRecommendationsOperation,
   ShopifyProductsOperation,
+  ShopifyProductsPageOperation,
   ShopifyRemoveFromCartOperation,
   ShopifyUpdateCartOperation,
 } from "./types";
@@ -141,7 +149,7 @@ const reshapeCart = (cart: ShopifyCart): Cart => {
 };
 
 const reshapeCollection = (
-  collection: ShopifyCollection
+  collection: ShopifyCollection,
 ): Collection | undefined => {
   if (!collection) {
     return undefined;
@@ -183,7 +191,7 @@ const reshapeImages = (images: Connection<Image>, productTitle: string) => {
 
 const reshapeProduct = (
   product: ShopifyProduct,
-  filterHiddenProducts: boolean = true
+  filterHiddenProducts: boolean = true,
 ) => {
   if (
     !product ||
@@ -226,7 +234,7 @@ export async function createCart(): Promise<Cart> {
 }
 
 export async function addToCart(
-  lines: { merchandiseId: string; quantity: number }[]
+  lines: { merchandiseId: string; quantity: number }[],
 ): Promise<Cart> {
   const cartId = (await cookies()).get("cartId")?.value!;
   const res = await shopifyFetch<ShopifyAddToCartOperation>({
@@ -253,7 +261,7 @@ export async function removeFromCart(lineIds: string[]): Promise<Cart> {
 }
 
 export async function updateCart(
-  lines: { id: string; merchandiseId: string; quantity: number }[]
+  lines: { id: string; merchandiseId: string; quantity: number }[],
 ): Promise<Cart> {
   const cartId = (await cookies()).get("cartId")?.value!;
   const res = await shopifyFetch<ShopifyUpdateCartOperation>({
@@ -292,7 +300,7 @@ export async function getCart(): Promise<Cart | undefined> {
 }
 
 export async function getCollection(
-  handle: string
+  handle: string,
 ): Promise<Collection | undefined> {
   "use cache";
   cacheTag(TAGS.collections);
@@ -323,7 +331,7 @@ export async function getCollectionProducts({
 
   if (!endpoint) {
     console.log(
-      `Skipping getCollectionProducts for '${collection}' - Shopify not configured`
+      `Skipping getCollectionProducts for '${collection}' - Shopify not configured`,
     );
     return [];
   }
@@ -343,7 +351,7 @@ export async function getCollectionProducts({
   }
 
   return reshapeProducts(
-    removeEdgesAndNodes(res.body.data.collection.products)
+    removeEdgesAndNodes(res.body.data.collection.products),
   );
 }
 
@@ -388,7 +396,7 @@ export async function getCollections(): Promise<Collection[]> {
     // Filter out the `hidden` collections.
     // Collections that start with `hidden-*` need to be hidden on the search page.
     ...reshapeCollections(shopifyCollections).filter(
-      (collection) => !collection.handle.startsWith("hidden")
+      (collection) => !collection.handle.startsWith("hidden"),
     ),
   ];
 
@@ -461,7 +469,7 @@ export async function getProduct(handle: string): Promise<Product | undefined> {
 }
 
 export async function getProductRecommendations(
-  productId: string
+  productId: string,
 ): Promise<Product[]> {
   "use cache";
   cacheTag(TAGS.products);
@@ -500,6 +508,117 @@ export async function getProducts({
   });
 
   return reshapeProducts(removeEdgesAndNodes(res.body.data.products));
+}
+
+// ---------------------------------------------------------------------------
+// Paginación por cursor (SASSY). Funciones aditivas: getProducts y
+// getCollectionProducts siguen intactas para home, sitemap, etc.
+// ---------------------------------------------------------------------------
+
+const emptyPageInfo: PageInfo = {
+  hasNextPage: false,
+  hasPreviousPage: false,
+  startCursor: null,
+  endCursor: null,
+};
+
+/** `before` pide la página anterior (last N); si no, la siguiente (first N). */
+const paginationVariables = ({
+  after,
+  before,
+  pageSize = PRODUCTS_PAGE_SIZE,
+}: {
+  after?: string;
+  before?: string;
+  pageSize?: number;
+}): ShopifyPaginationVariables =>
+  before ? { last: pageSize, before } : { first: pageSize, after };
+
+export async function getProductsPage({
+  query,
+  reverse,
+  sortKey,
+  after,
+  before,
+  pageSize,
+}: {
+  query?: string;
+  reverse?: boolean;
+  sortKey?: string;
+  after?: string;
+  before?: string;
+  pageSize?: number;
+}): Promise<ProductPage> {
+  "use cache";
+  cacheTag(TAGS.products);
+  cacheLife("days");
+
+  if (!endpoint) {
+    return { products: [], pageInfo: emptyPageInfo };
+  }
+
+  const res = await shopifyFetch<ShopifyProductsPageOperation>({
+    query: getProductsPageQuery,
+    variables: {
+      query,
+      reverse,
+      sortKey,
+      ...paginationVariables({ after, before, pageSize }),
+    },
+  });
+
+  const connection = res.body.data.products;
+
+  return {
+    products: reshapeProducts(removeEdgesAndNodes(connection)),
+    pageInfo: connection.pageInfo,
+  };
+}
+
+export async function getCollectionProductsPage({
+  collection,
+  reverse,
+  sortKey,
+  after,
+  before,
+  pageSize,
+}: {
+  collection: string;
+  reverse?: boolean;
+  sortKey?: string;
+  after?: string;
+  before?: string;
+  pageSize?: number;
+}): Promise<ProductPage> {
+  "use cache";
+  cacheTag(TAGS.collections, TAGS.products);
+  cacheLife("days");
+
+  if (!endpoint) {
+    return { products: [], pageInfo: emptyPageInfo };
+  }
+
+  const res = await shopifyFetch<ShopifyCollectionProductsPageOperation>({
+    query: getCollectionProductsPageQuery,
+    variables: {
+      handle: collection,
+      reverse,
+      sortKey: sortKey === "CREATED_AT" ? "CREATED" : sortKey,
+      ...paginationVariables({ after, before, pageSize }),
+    },
+  });
+
+  const connection = res.body.data.collection?.products;
+
+  if (!connection) {
+    console.log(`No collection found for \`${collection}\``);
+    return { products: [], pageInfo: emptyPageInfo };
+  }
+
+  return {
+    products: reshapeProducts(removeEdgesAndNodes(connection)),
+    pageInfo: connection.pageInfo,
+  };
 }
 
 // This is called from `app/api/revalidate.ts` so providers can control revalidation logic.

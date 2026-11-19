@@ -1,8 +1,11 @@
-import Grid from "components/grid";
-import { GridTileImage } from "components/grid/tile";
+import { ProductCard } from "components/product/product-card";
 import { Product } from "lib/shopify/types";
-import Link from "next/link";
 
+/**
+ * Ítems de la grilla de catálogo. Se renderiza dentro de <Grid> (un <ul>).
+ * Usa <li> propio en vez de Grid.Item porque éste fuerza aspect-square,
+ * y la tarjeta editorial define su propia proporción (4/5 + texto abajo).
+ */
 export default function ProductGridItems({
   products,
 }: {
@@ -10,26 +13,14 @@ export default function ProductGridItems({
 }) {
   return (
     <>
-      {products.map((product) => (
-        <Grid.Item key={product.handle} className="animate-fadeIn">
-          <Link
-            className="relative inline-block h-full w-full"
-            href={`/product/${product.handle}`}
-            prefetch={true}
-          >
-            <GridTileImage
-              alt={product.title}
-              label={{
-                title: product.title,
-                amount: product.priceRange.maxVariantPrice.amount,
-                currencyCode: product.priceRange.maxVariantPrice.currencyCode,
-              }}
-              src={product.featuredImage?.url}
-              fill
-              sizes="(min-width: 768px) 33vw, (min-width: 640px) 50vw, 100vw"
-            />
-          </Link>
-        </Grid.Item>
+      {products.map((product, index) => (
+        <li key={product.handle} className="animate-fadeIn">
+          <ProductCard
+            product={product}
+            priority={index < 3}
+            sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 100vw"
+          />
+        </li>
       ))}
     </>
   );

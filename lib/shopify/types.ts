@@ -270,3 +270,54 @@ export type ShopifyProductsOperation = {
     sortKey?: string;
   };
 };
+
+// ---------------------------------------------------------------------------
+// Paginación por cursor (SASSY). Tipos aditivos: no modifican los existentes.
+// ---------------------------------------------------------------------------
+
+export type PageInfo = {
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+  startCursor: string | null;
+  endCursor: string | null;
+};
+
+export type ShopifyPaginatedConnection<T> = Connection<T> & {
+  pageInfo: PageInfo;
+};
+
+export type ProductPage = {
+  products: Product[];
+  pageInfo: PageInfo;
+};
+
+export type ShopifyPaginationVariables = {
+  first?: number;
+  after?: string;
+  last?: number;
+  before?: string;
+};
+
+export type ShopifyProductsPageOperation = {
+  data: {
+    products: ShopifyPaginatedConnection<ShopifyProduct>;
+  };
+  variables: {
+    query?: string;
+    reverse?: boolean;
+    sortKey?: string;
+  } & ShopifyPaginationVariables;
+};
+
+export type ShopifyCollectionProductsPageOperation = {
+  data: {
+    collection: {
+      products: ShopifyPaginatedConnection<ShopifyProduct>;
+    } | null;
+  };
+  variables: {
+    handle: string;
+    reverse?: boolean;
+    sortKey?: string;
+  } & ShopifyPaginationVariables;
+};
