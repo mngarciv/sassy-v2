@@ -8,15 +8,18 @@ solo se rescatan patrones visuales: `.glass`, `.glass-strong`, `.grain`, metadat
 no se despliega.
 
 ## Comandos
+
 - Gestor de paquetes: **pnpm** (nunca npm/yarn; no commitear `package-lock.json`).
 - `pnpm dev` · `pnpm build` · `pnpm prettier` · `pnpm test` (= prettier:check).
 - Antes de dar algo por terminado: `pnpm build` sin errores de tipos.
 
 ## Variables de entorno (`.env.local`, nunca commitear)
+
 `SHOPIFY_STORE_DOMAIN`, `SHOPIFY_STOREFRONT_ACCESS_TOKEN`, `SHOPIFY_REVALIDATION_SECRET`,
 `COMPANY_NAME=SASSY SNKRS`, `SITE_NAME=SASSY.`
 
 ## Guardrails (no negociables)
+
 1. **No romper Shopify.** Respetar `lib/shopify/types.ts`, `lib/shopify/index.ts`,
    `lib/shopify/queries/*` y `fragments/*`. Para nuevas capacidades (p. ej. paginación)
    se **agregan** funciones/queries/tipos nuevos (`getProductsPage`, `pageInfo`, …);
@@ -31,20 +34,21 @@ no se despliega.
 5. Imágenes siempre con `next/image` y `sizes` correctos; dominios en `next.config.ts`.
 
 ## Sistema de diseño — Dark Editorial & Premium Glassmorphism
+
 Solo modo oscuro: `<html class="dark">` + `@custom-variant dark` en `globals.css`, así que
 todo `dark:` heredado del template queda siempre activo. No usar `bg-white`, `border-neutral-200`, `blue-600` ni los labels
 flotantes en píldora de Vercel (`components/label.tsx`) en vistas nuevas.
 
-| Token | Clases Tailwind |
-|---|---|
-| Lienzo | `bg-neutral-950 text-white` |
-| Tarjeta de producto (caja de imagen) | `bg-gradient-to-b from-neutral-800 to-neutral-950 rounded-2xl` |
-| Panel de cristal | clase `.glass rounded-2xl` (definida en `app/globals.css`) |
-| Panel de cristal fuerte | clase `.glass-strong` (navbar, modales, carrito) |
-| Navbar | `sticky top-0 z-50 bg-black/80 backdrop-blur-md border-b border-white/10` |
-| Texto secundario | `text-neutral-400` · bordes hover `hover:border-white/30` |
-| Acento / CTA | `bg-white text-black` (invertido) · hover `bg-neutral-200` |
-| Sombra 3D de zapatilla | `drop-shadow-[0_25px_25px_rgba(0,0,0,0.6)]` |
+| Token                                | Clases Tailwind                                                           |
+| ------------------------------------ | ------------------------------------------------------------------------- |
+| Lienzo                               | `bg-neutral-950 text-white`                                               |
+| Tarjeta de producto (caja de imagen) | `bg-gradient-to-b from-neutral-800 to-neutral-950 rounded-2xl`            |
+| Panel de cristal                     | clase `.glass rounded-2xl` (definida en `app/globals.css`)                |
+| Panel de cristal fuerte              | clase `.glass-strong` (navbar, modales, carrito)                          |
+| Navbar                               | `sticky top-0 z-50 bg-black/80 backdrop-blur-md border-b border-white/10` |
+| Texto secundario                     | `text-neutral-400` · bordes hover `hover:border-white/30`                 |
+| Acento / CTA                         | `bg-white text-black` (invertido) · hover `bg-neutral-200`                |
+| Sombra 3D de zapatilla               | `drop-shadow-[0_25px_25px_rgba(0,0,0,0.6)]`                               |
 
 - Fuentes: Geist Sans (`font-sans`) para texto, Geist Mono (`font-mono`) para metadatos/precios/CTA pequeños.
 - Tipografía: limpia, alto contraste, títulos en mayúsculas con `tracking-tight`/`font-black`;
@@ -59,11 +63,12 @@ flotantes en píldora de Vercel (`components/label.tsx`) en vistas nuevas.
 - Copy en español (Chile). Moneda desde Shopify vía `components/price.tsx`.
 
 ## Mapa de páginas y componentes
+
 - **Navbar** `components/layout/navbar/index.tsx`: logo circular `public/logo-SS.png` + `SASSY.`;
   menú desde Shopify (`getMenu`) con fallback `NUEVOS LLEGADOS, HOMBRES, MUJERES, MARCAS, REBAJAS`
   → `/search` y `/search/[collection]`; buscador oscuro, iconos Perfil/Favoritos, `<CartModal />`.
 - **Home** `app/page.tsx`: `components/hero.tsx` (fondo `grayscale blur-[4px]`, “SÉ ÚNICO.”,
-  CTA “Explorar Todo” → `/search`, stack rotativo de 3 zapatillas con *peek* a la derecha en
+  CTA “Explorar Todo” → `/search`, stack rotativo de 3 zapatillas con _peek_ a la derecha en
   `hero-client.tsx`), `components/carousel.tsx` (server) + `carousel-client.tsx` (Embla, loop).
 - **Footer** `components/layout/footer.tsx`: dark, sin “Deploy on Vercel”, enlaces de marca,
   envíos/devoluciones, redes `@sassy.snkrs`.
@@ -74,6 +79,7 @@ flotantes en píldora de Vercel (`components/label.tsx`) en vistas nuevas.
   y `components/layout/search/pagination.tsx`. Cambiar de colección u orden reinicia el cursor.
 
 ## Convenciones de código
+
 - Imports absolutos (`components/...`, `lib/...`) como en el template.
 - `clsx` para clases condicionales; Prettier + `prettier-plugin-tailwindcss` ordena clases.
 - Componentes nuevos: un componente por archivo, nombres `kebab-case.tsx`, export nombrado
@@ -81,6 +87,7 @@ flotantes en píldora de Vercel (`components/label.tsx`) en vistas nuevas.
 - Commits pequeños y descriptivos en español (`feat(grid): tarjetas editoriales oscuras`).
 
 ## Estado (actualizar al cerrar cada sesión)
+
 - [x] Tema dark global, utilidades glass, `ProductCard`, grilla, paginación por cursor, layout `/search`.
 - [ ] Navbar (logo `public/logo-SS.png` aún no está en el repo), menú con fallback.
 - [ ] Hero con stack rotativo · carrusel Embla (`pnpm add embla-carousel-react`) · footer.

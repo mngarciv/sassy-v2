@@ -49,16 +49,16 @@
         class="js-brand-name font-display text-2xl font-black tracking-tighter uppercase"
       ></a>
       <div class="flex gap-6 items-center">
-          <a
-            href="./buscar.html"
-            class="text-xs font-bold tracking-widest uppercase cursor-pointer"
-            >Buscar</a
-          >
-          <a
-            href="./carrito.html"
-            class="text-xs font-bold tracking-widest uppercase cursor-pointer bg-black text-white px-4 py-2"
-            >CARRITO (<span data-cart-count>0</span>)</a
-          >
+        <a
+          href="./buscar.html"
+          class="text-xs font-bold tracking-widest uppercase cursor-pointer"
+          >Buscar</a
+        >
+        <a
+          href="./carrito.html"
+          class="text-xs font-bold tracking-widest uppercase cursor-pointer bg-black text-white px-4 py-2"
+          >CARRITO (<span data-cart-count>0</span>)</a
+        >
       </div>
     </nav>
 
@@ -264,8 +264,9 @@
         const products = await response.json();
 
         const baseProducts = category
-          ? products.filter((product) =>
-              product.category.toLowerCase() === category.toLowerCase(),
+          ? products.filter(
+              (product) =>
+                product.category.toLowerCase() === category.toLowerCase(),
             )
           : products;
 

@@ -47,7 +47,9 @@
         <h2 class="font-display text-2xl font-black uppercase tracking-tighter">
           Tu Carrito (<span data-cart-count>0</span>)
         </h2>
-        <a href="./index.html" class="font-mono text-xl hover:text-gray-500">✕</a>
+        <a href="./index.html" class="font-mono text-xl hover:text-gray-500"
+          >✕</a
+        >
       </div>
 
       <!-- BARRA PROGRESO ENVÍO (Incentivo) -->
@@ -166,7 +168,9 @@
             })
             .filter(Boolean);
 
-          const totalCount = getCartCount(resolvedItems.map(({ item }) => item));
+          const totalCount = getCartCount(
+            resolvedItems.map(({ item }) => item),
+          );
           countEl.textContent = totalCount.toString();
 
           resolvedItems.forEach(({ item, product, index }) => {
