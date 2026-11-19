@@ -50,5 +50,14 @@ export const HIDDEN_PRODUCT_TAG = "nextjs-frontend-hidden";
 export const DEFAULT_OPTION = "Default Title";
 export const SHOPIFY_GRAPHQL_API_ENDPOINT = "/api/2023-01/graphql.json";
 
+/** Menú principal cuando Shopify no entrega `next-js-frontend-header-menu`. */
+export const FALLBACK_MENU: { title: string; path: string }[] = [
+  { title: "Nuevos llegados", path: "/search?sort=latest-desc" },
+  { title: "Hombres", path: "/search/hombres" },
+  { title: "Mujeres", path: "/search/mujeres" },
+  { title: "Marcas", path: "/search/marcas" },
+  { title: "Rebajas", path: "/search/rebajas" },
+];
+
 /** Productos por página en /search (paginación por cursor). */
 export const PRODUCTS_PAGE_SIZE = 24;
