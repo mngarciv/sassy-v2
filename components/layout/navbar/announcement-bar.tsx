@@ -1,21 +1,19 @@
-const MESSAGES = [
-  "Solo productos originales",
-  "Venta · Compra · Permuta",
-  "Envíos a todo Chile y el mundo",
-  "+3000 ventas · 6 años",
-];
+import { BRAND } from "lib/constants";
 
 /** Franja superior con los sellos de confianza de @sassy.snkrs. */
 export function AnnouncementBar() {
   return (
-    <div className="border-b border-white/10 bg-black">
-      <ul className="mx-auto flex h-8 max-w-(--breakpoint-2xl) items-center justify-center gap-6 px-4 font-mono text-[10px] uppercase tracking-widest text-neutral-400 lg:px-6">
-        {MESSAGES.map((message, i) => (
+    <div className="bg-ink text-paper">
+      <ul className="shell eyebrow flex h-8 items-center justify-center gap-8 text-[10px] md:justify-between">
+        {BRAND.claims.map((claim, i) => (
           <li
-            key={message}
-            className={i === 0 ? "text-white" : "hidden md:block"}
+            key={claim}
+            className={i === 0 ? "flex items-center gap-2" : "hidden md:block"}
           >
-            {message}
+            {i === 0 ? (
+              <span aria-hidden className="h-1.5 w-1.5 bg-signal" />
+            ) : null}
+            {claim}
           </li>
         ))}
       </ul>

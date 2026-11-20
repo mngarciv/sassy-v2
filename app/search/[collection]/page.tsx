@@ -4,8 +4,10 @@ import { notFound } from "next/navigation";
 
 import Grid from "components/grid";
 import ProductGridItems from "components/layout/product-grid-items";
+import { CatalogHeader } from "components/layout/search/catalog-header";
+import { EmptyState } from "components/layout/search/empty-state";
 import Pagination from "components/layout/search/pagination";
-import { defaultSort, sorting } from "lib/constants";
+import { PRODUCT_GRID_CLASS, defaultSort, sorting } from "lib/constants";
 import { firstParam } from "lib/utils";
 
 export async function generateMetadata(props: {
@@ -48,26 +50,27 @@ export default async function CategoryPage(props: {
     }),
   ]);
 
+  if (!collection) return notFound();
+
+  const singlePage = !pageInfo.hasNextPage && !pageInfo.hasPreviousPage;
+
   return (
     <section>
-      <header className="mb-8">
-        <p className="mb-2 font-mono text-[10px] tracking-widest text-neutral-400 uppercase">
-          Colección
-        </p>
-        <h1 className="text-3xl font-black tracking-tight uppercase md:text-4xl">
-          {collection?.title ?? params.collection}
-        </h1>
-      </header>
+      <CatalogHeader
+        crumb={collection.title}
+        title={collection.title}
+        description={collection.description || undefined}
+        count={singlePage ? products.length : undefined}
+      />
 
       {products.length === 0 ? (
-        <div className="glass rounded-2xl p-16 text-center">
-          <p className="font-mono text-[11px] tracking-widest text-neutral-400 uppercase">
-            No hay productos en esta colección
-          </p>
-        </div>
+        <EmptyState
+          title="Sin pares por ahora"
+          body="Esta colección se está renovando. Mira el resto del catálogo mientras tanto."
+        />
       ) : (
         <>
-          <Grid className="grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+          <Grid className={PRODUCT_GRID_CLASS}>
             <ProductGridItems products={products} />
           </Grid>
           <Pagination

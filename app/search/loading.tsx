@@ -1,21 +1,23 @@
 import Grid from "components/grid";
+import { PRODUCT_GRID_CLASS } from "lib/constants";
 
 export default function Loading() {
   return (
     <>
-      <div className="mb-8 space-y-3">
-        <div className="h-3 w-32 animate-pulse rounded bg-neutral-800" />
-        <div className="h-9 w-48 animate-pulse rounded bg-neutral-800" />
+      <div className="mb-10 space-y-6">
+        <div className="h-3 w-32 animate-pulse bg-paper-3" />
+        <div className="h-16 w-2/3 animate-pulse bg-paper-3 md:h-24 md:w-1/3" />
+        <div className="h-[70px] border-y border-ink/15" />
       </div>
-      <Grid className="grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
-        {Array(9)
+      <Grid className={PRODUCT_GRID_CLASS}>
+        {Array(8)
           .fill(0)
           .map((_, index) => (
             <li key={index}>
-              <div className="aspect-[4/5] w-full animate-pulse rounded-2xl bg-gradient-to-b from-neutral-800 to-neutral-900" />
-              <div className="mt-4 flex justify-between gap-4 px-1">
-                <div className="h-4 w-2/3 animate-pulse rounded bg-neutral-800" />
-                <div className="h-4 w-14 animate-pulse rounded bg-neutral-800" />
+              <div className="aspect-[4/5] w-full animate-pulse bg-paper-2" />
+              <div className="mt-3 space-y-2">
+                <div className="h-3 w-1/3 animate-pulse bg-paper-3" />
+                <div className="h-4 w-2/3 animate-pulse bg-paper-3" />
               </div>
             </li>
           ))}

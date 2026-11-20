@@ -1,7 +1,9 @@
 import Grid from "components/grid";
 import ProductGridItems from "components/layout/product-grid-items";
+import { CatalogHeader } from "components/layout/search/catalog-header";
+import { EmptyState } from "components/layout/search/empty-state";
 import Pagination from "components/layout/search/pagination";
-import { defaultSort, sorting } from "lib/constants";
+import { PRODUCT_GRID_CLASS, defaultSort, sorting } from "lib/constants";
 import { getProductsPage } from "lib/shopify";
 import { firstParam } from "lib/utils";
 
@@ -29,20 +31,31 @@ export default async function SearchPage(props: {
     before,
   });
 
+  const singlePage = !pageInfo.hasNextPage && !pageInfo.hasPreviousPage;
+  const isLatest = sort === "latest-desc" && !searchValue;
+
   return (
     <>
-      <header className="mb-8">
-        <p className="mb-2 font-mono text-[10px] tracking-widest text-neutral-400 uppercase">
-          {searchValue ? "Resultados de búsqueda" : "Catálogo completo"}
-        </p>
-        <h1 className="text-3xl font-black tracking-tight uppercase md:text-4xl">
-          {searchValue ? <>&ldquo;{searchValue}&rdquo;</> : "Todo"}
-        </h1>
-      </header>
+      <CatalogHeader
+        crumb={searchValue ? "Búsqueda" : "Catálogo"}
+        title={
+          searchValue
+            ? `“${searchValue}”`
+            : isLatest
+              ? "Nuevos llegados"
+              : "Todo"
+        }
+        description={
+          searchValue
+            ? undefined
+            : "Zapatillas originales, ediciones limitadas y calzado urbano. Stock real, actualizado a diario."
+        }
+        count={singlePage ? products.length : undefined}
+      />
 
       {products.length > 0 ? (
         <>
-          <Grid className="grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+          <Grid className={PRODUCT_GRID_CLASS}>
             <ProductGridItems products={products} />
           </Grid>
           <Pagination
@@ -52,13 +65,14 @@ export default async function SearchPage(props: {
           />
         </>
       ) : (
-        <div className="glass rounded-2xl p-16 text-center">
-          <p className="font-mono text-[11px] tracking-widest text-neutral-400 uppercase">
-            {searchValue
-              ? `Sin resultados para “${searchValue}”`
-              : "Aún no hay productos"}
-          </p>
-        </div>
+        <EmptyState
+          title={searchValue ? "Sin resultados" : "Aún no hay productos"}
+          body={
+            searchValue
+              ? `No encontramos pares para “${searchValue}”. Prueba con otro modelo o marca.`
+              : "Estamos cargando el stock. Vuelve pronto."
+          }
+        />
       )}
     </>
   );

@@ -16,13 +16,13 @@ function SubmitButton({
   selectedVariantId: string | undefined;
 }) {
   const buttonClasses =
-    "relative flex w-full items-center justify-center rounded-full bg-blue-600 p-4 tracking-wide text-white";
-  const disabledClasses = "cursor-not-allowed opacity-60 hover:opacity-60";
+    "relative flex h-14 w-full items-center justify-center gap-3 bg-ink text-sm font-medium text-paper transition-colors duration-300";
+  const disabledClasses = "cursor-not-allowed bg-ink/30";
 
   if (!availableForSale) {
     return (
       <button disabled className={clsx(buttonClasses, disabledClasses)}>
-        Out Of Stock
+        Agotado
       </button>
     );
   }
@@ -30,42 +30,41 @@ function SubmitButton({
   if (!selectedVariantId) {
     return (
       <button
-        aria-label="Please select an option"
+        aria-label="Selecciona una talla"
         disabled
         className={clsx(buttonClasses, disabledClasses)}
       >
-        <div className="absolute left-0 ml-4">
-          <PlusIcon className="h-5" />
-        </div>
-        Add To Cart
+        Selecciona una talla
       </button>
     );
   }
 
   return (
     <button
-      aria-label="Add to cart"
-      className={clsx(buttonClasses, {
-        "hover:opacity-90": true,
-      })}
+      aria-label="Agregar al carro"
+      className={clsx(buttonClasses, "hover:bg-ink-2")}
     >
-      <div className="absolute left-0 ml-4">
-        <PlusIcon className="h-5" />
-      </div>
-      Add To Cart
+      <PlusIcon className="h-4" />
+      Agregar al carro
     </button>
   );
 }
 
 export function AddToCart({ product }: { product: Product }) {
-  const { variants, availableForSale } = product;
+  const { variants, availableForSale, options } = product;
   const { addCartItem } = useCart();
   const searchParams = useSearchParams();
   const [message, formAction] = useActionState(addItem, null);
 
+  // Las opciones con un único valor (p. ej. un solo color) se dan por elegidas.
+  const fixedOptions = new Set(
+    options.filter((o) => o.values.length === 1).map((o) => o.name),
+  );
   const variant = variants.find((variant: ProductVariant) =>
     variant.selectedOptions.every(
-      (option) => option.value === searchParams.get(option.name.toLowerCase()),
+      (option) =>
+        fixedOptions.has(option.name) ||
+        option.value === searchParams.get(option.name.toLowerCase()),
     ),
   );
   const defaultVariantId = variants.length === 1 ? variants[0]?.id : undefined;

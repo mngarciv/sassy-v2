@@ -55,9 +55,34 @@ export const FALLBACK_MENU: { title: string; path: string }[] = [
   { title: "Nuevos llegados", path: "/search?sort=latest-desc" },
   { title: "Hombres", path: "/search/hombres" },
   { title: "Mujeres", path: "/search/mujeres" },
-  { title: "Marcas", path: "/search/marcas" },
+  { title: "Marcas", path: "/marcas" },
   { title: "Rebajas", path: "/search/rebajas" },
 ];
 
 /** Productos por página en /search (paginación por cursor). */
 export const PRODUCTS_PAGE_SIZE = 24;
+
+/** Datos de marca usados en navbar, home y footer. */
+export const BRAND = {
+  instagram: "https://www.instagram.com/sassy.snkrs/",
+  handle: "@sassy.snkrs",
+  account: "https://shopify.com/86150217957/account",
+  claims: [
+    "100% originales",
+    "Venta · Compra · Permuta",
+    "Envíos a todo Chile y el mundo",
+    "+3000 ventas · 6 años",
+  ],
+};
+
+/** Accesos de la home: handle de colección Shopify → rótulo. */
+export const HOME_CATEGORIES: { handle: string; title: string }[] = [
+  { handle: "hombres", title: "Hombres" },
+  { handle: "mujeres", title: "Mujeres" },
+  { handle: "rebajas", title: "Rebajas" },
+  { handle: "editorial-edge-originals", title: "Ediciones limitadas" },
+];
+
+/** Grilla estándar de productos (catálogo, marcas, relacionados). */
+export const PRODUCT_GRID_CLASS =
+  "grid-cols-2 gap-x-3 gap-y-10 md:grid-cols-3 md:gap-x-4 xl:grid-cols-4";

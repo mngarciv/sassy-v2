@@ -1,76 +1,127 @@
+import { LogoMark } from "components/logo-mark";
+import { BRAND, FALLBACK_MENU } from "lib/constants";
 import Link from "next/link";
-
-import FooterMenu from "components/layout/footer-menu";
-import LogoSquare from "components/logo-square";
-import { getMenu } from "lib/shopify";
-import { Suspense } from "react";
 
 const { COMPANY_NAME, SITE_NAME } = process.env;
 
-export default async function Footer() {
-  const currentYear = new Date().getFullYear();
-  const copyrightDate = 2023 + (currentYear > 2023 ? `-${currentYear}` : "");
-  const skeleton =
-    "w-full h-6 animate-pulse rounded-sm bg-neutral-200 dark:bg-neutral-700";
-  const menu = await getMenu("next-js-frontend-footer-menu");
-  const copyrightName = COMPANY_NAME || SITE_NAME || "";
+const HELP = [
+  { title: "Envíos", path: "/ayuda#envios" },
+  { title: "Cambios y devoluciones", path: "/ayuda#cambios" },
+  { title: "Autenticidad", path: "/ayuda#autenticidad" },
+  { title: "Vende o permuta tu par", path: "/ayuda#vender" },
+];
+
+function Column({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <p className="eyebrow mb-4 text-paper/40">{title}</p>
+      <ul className="space-y-2 text-sm">{children}</ul>
+    </div>
+  );
+}
+
+const link =
+  "text-paper/80 underline-offset-4 transition-colors hover:text-paper hover:underline";
+
+export default function Footer() {
+  const year = new Date().getFullYear();
+  const name = COMPANY_NAME || "SASSY SNKRS";
 
   return (
-    <footer className="text-sm text-neutral-500 dark:text-neutral-400">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 border-t border-neutral-200 px-6 py-12 text-sm md:flex-row md:gap-12 md:px-4 min-[1320px]:px-0 dark:border-neutral-700">
-        <div>
-          <Link
-            className="flex items-center gap-2 text-black md:pt-1 dark:text-white"
-            href="/"
-          >
-            <LogoSquare size="sm" />
-            <span className="uppercase">{SITE_NAME}</span>
-          </Link>
-        </div>
-        <Suspense
-          fallback={
-            <div className="flex h-[188px] w-[200px] flex-col gap-2">
-              <div className={skeleton} />
-              <div className={skeleton} />
-              <div className={skeleton} />
-              <div className={skeleton} />
-              <div className={skeleton} />
-              <div className={skeleton} />
-            </div>
-          }
-        >
-          <FooterMenu menu={menu} />
-        </Suspense>
-        <div className="md:ml-auto">
+    <footer className="overflow-hidden bg-ink text-paper">
+      <div className="shell grid grid-cols-1 gap-12 pt-20 pb-12 md:grid-cols-2 lg:grid-cols-12">
+        <div className="lg:col-span-5">
+          <div className="flex items-center gap-3">
+            <LogoMark />
+            <span className="font-display text-2xl">
+              {SITE_NAME || "SASSY."}
+            </span>
+          </div>
+          <p className="mt-6 max-w-sm text-sm leading-relaxed text-paper/60">
+            Zapatillas originales y streetwear. Venta, compra y permuta con
+            envíos a todo Chile y el mundo.
+          </p>
           <a
-            className="flex h-8 w-max flex-none items-center justify-center rounded-md border border-neutral-200 bg-white text-xs text-black dark:border-neutral-700 dark:bg-black dark:text-white"
-            aria-label="Deploy on Vercel"
-            href="https://vercel.com/templates/next.js/nextjs-commerce"
+            href={BRAND.instagram}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-8 inline-flex items-center gap-2 text-sm font-medium"
           >
-            <span className="px-3">▲</span>
-            <hr className="h-full border-r border-neutral-200 dark:border-neutral-700" />
-            <span className="px-3">Deploy</span>
+            <span className="h-2 w-2 bg-signal" aria-hidden />
+            {BRAND.handle} en Instagram →
           </a>
         </div>
+
+        <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:col-span-7">
+          <Column title="Tienda">
+            <li>
+              <Link href="/search" className={link}>
+                Todo el catálogo
+              </Link>
+            </li>
+            {FALLBACK_MENU.map((item) => (
+              <li key={item.title}>
+                <Link href={item.path} className={link}>
+                  {item.title}
+                </Link>
+              </li>
+            ))}
+          </Column>
+          <Column title="Ayuda">
+            {HELP.map((item) => (
+              <li key={item.title}>
+                <Link href={item.path} className={link}>
+                  {item.title}
+                </Link>
+              </li>
+            ))}
+          </Column>
+          <Column title="Cuenta">
+            <li>
+              <a href={BRAND.account} className={link}>
+                Mi cuenta
+              </a>
+            </li>
+            <li>
+              <a href={`${BRAND.account}/orders`} className={link}>
+                Mis pedidos
+              </a>
+            </li>
+            <li>
+              <a
+                href={BRAND.instagram}
+                target="_blank"
+                rel="noreferrer"
+                className={link}
+              >
+                Contacto por DM
+              </a>
+            </li>
+          </Column>
+        </div>
       </div>
-      <div className="border-t border-neutral-200 py-6 text-sm dark:border-neutral-700">
-        <div className="mx-auto flex w-full max-w-7xl flex-col items-center gap-1 px-4 md:flex-row md:gap-0 md:px-4 min-[1320px]:px-0">
+
+      <div className="shell">
+        <p
+          aria-hidden
+          className="font-display -mb-[0.12em] text-center text-[25vw] leading-[0.8] text-paper/[0.07] select-none 2xl:text-[400px]"
+        >
+          SASSY.
+        </p>
+      </div>
+
+      <div className="border-t border-paper/10">
+        <div className="shell eyebrow flex flex-col gap-2 py-5 text-[10px] text-paper/40 md:flex-row md:justify-between">
           <p>
-            &copy; {copyrightDate} {copyrightName}
-            {copyrightName.length && !copyrightName.endsWith(".")
-              ? "."
-              : ""}{" "}
-            All rights reserved.
+            © {year} {name}. Todos los derechos reservados.
           </p>
-          <hr className="mx-4 hidden h-4 w-[1px] border-l border-neutral-400 md:inline-block" />
-          <p>
-            <a href="https://github.com/vercel/commerce">View the source</a>
-          </p>
-          <p className="md:ml-auto">
-            <a href="https://vercel.com" className="text-black dark:text-white">
-              Created by ▲ Vercel
-            </a>
-          </p>
+          <p>Santiago, Chile · Pagos seguros vía Shopify</p>
         </div>
       </div>
     </footer>
