@@ -33,50 +33,69 @@ no se despliega.
 4. Mantener `"use cache"` / `cacheTag` / `cacheLife` existentes en el data layer.
 5. Imágenes siempre con `next/image` y `sizes` correctos; dominios en `next.config.ts`.
 
-## Sistema de diseño — Dark Editorial & Premium Glassmorphism
+## Sistema de diseño — "Gallery" (claro editorial)
 
-Solo modo oscuro: `<html class="dark">` + `@custom-variant dark` en `globals.css`, así que
-todo `dark:` heredado del template queda siempre activo. No usar `bg-white`, `border-neutral-200`, `blue-600` ni los labels
-flotantes en píldora de Vercel (`components/label.tsx`) en vistas nuevas.
+Reemplaza al antiguo "Dark Editorial & Glassmorphism" (ya no hay `.glass`, `dark:` ni
+`<html class="dark">`). Referencias: tiendas de sneakers mejor evaluadas (END., SNS, KITH):
+lienzo claro, fotos de estudio a sangre, tipografía display condensada, filetes finos,
+esquinas rectas y un solo color de acento. Tokens en `@theme` de `app/globals.css`.
 
-| Token                                | Clases Tailwind                                                           |
-| ------------------------------------ | ------------------------------------------------------------------------- |
-| Lienzo                               | `bg-neutral-950 text-white`                                               |
-| Tarjeta de producto (caja de imagen) | `bg-gradient-to-b from-neutral-800 to-neutral-950 rounded-2xl`            |
-| Panel de cristal                     | clase `.glass rounded-2xl` (definida en `app/globals.css`)                |
-| Panel de cristal fuerte              | clase `.glass-strong` (navbar, modales, carrito)                          |
-| Navbar                               | `sticky top-0 z-50 bg-black/80 backdrop-blur-md border-b border-white/10` |
-| Texto secundario                     | `text-neutral-400` · bordes hover `hover:border-white/30`                 |
-| Acento / CTA                         | `bg-white text-black` (invertido) · hover `bg-neutral-200`                |
-| Sombra 3D de zapatilla               | `drop-shadow-[0_25px_25px_rgba(0,0,0,0.6)]`                               |
+| Token                 | Uso                                                                         |
+| --------------------- | --------------------------------------------------------------------------- |
+| `bg-paper` `text-ink` | Lienzo hueso cálido (#eeece7) y tinta casi negra (#0f0f0e)                  |
+| `bg-paper-2/3`        | Fondo de cajas de imagen y skeletons                                        |
+| `bg-ink text-paper`   | Bloques de contraste: franja de anuncios, hero, bloque de marca, footer     |
+| `text-muted`          | Texto secundario (#6c6862)                                                  |
+| `signal` (#ff4d00)    | ÚNICO acento: rebajas, % de descuento, puntos de énfasis. Nunca en CTA      |
+| Bordes                | Filetes `border-ink/10–20`; hover `hover:border-ink`                        |
+| CTA primario          | `h-14 bg-ink text-paper` (sobre oscuro: `bg-paper text-ink`), sin `rounded` |
 
-- Fuentes: Geist Sans (`font-sans`) para texto, Geist Mono (`font-mono`) para metadatos/precios/CTA pequeños.
-- Tipografía: limpia, alto contraste, títulos en mayúsculas con `tracking-tight`/`font-black`;
-  metadatos en `text-xs uppercase tracking-widest text-neutral-400`.
-- Fotos de producto silueteadas (sin fondo): `object-contain` + drop-shadow, centradas
-  con padding (`p-6`), nunca `object-cover` en tarjetas de producto.
-- **Tarjeta editorial estándar** (`components/product/product-card.tsx`): contenedor
-  `aspect-[4/5]` con degradado; título y precio **fuera** de la caja, debajo, alineados
-  a la izquierda (título `text-sm font-medium`, precio `text-sm text-neutral-400`).
-  Hover: imagen `scale-105` + leve elevación. Reutilizarla en grid, carrusel y relacionados.
-- Transiciones: `transition duration-300 ease-out`; respetar `motion-reduce:`.
-- Copy en español (Chile). Moneda desde Shopify vía `components/price.tsx`.
+- Utilidades propias: `font-display` (Archivo condensada `wdth 72`, 800, mayúsculas — títulos),
+  `eyebrow` (mono 11px, mayúsculas, tracking amplio — metadatos/índices), `shell`
+  (contenedor 1600px con gutter 16/32px). Texto corrido en Geist Sans.
+- Sin `rounded-*` en tarjetas/botones (excepto el logo circular), sin glass ni degradados de UI.
+- Fotos de producto: son fotos de estudio 4:5 → `object-cover` a sangre en `aspect-[4/5]`.
+- **Tarjeta estándar** `components/product/product-card.tsx`: imagen 4:5 sobre `bg-paper-2`,
+  badge `−X%` en signal si hay `compareAtPrice`, debajo marca (`eyebrow`), nombre y precio
+  alineados a la izquierda. Hover: zoom lento (700ms) + "Ver par →". Usar en grillas, carrusel,
+  relacionados y rebajas. Grilla estándar: `PRODUCT_GRID_CLASS` (`lib/constants.ts`).
+- Encabezados de sección: `components/home/section-header.tsx` (índice 01/02… + título display).
+- Grillas con columnas solo en breakpoint: siempre `grid-cols-1` base (si no, la columna implícita
+  crece con el texto y desborda en móvil).
+- Transiciones `duration-300 ease-out` (imágenes 700ms); respetar `motion-reduce:`.
+- Copy en español (Chile). Montos con `formatMoney` / `components/price.tsx` (es-CL).
 
 ## Mapa de páginas y componentes
 
-- **Navbar** `components/layout/navbar/index.tsx`: logo circular `public/logo-SS.png` + `SASSY.`;
-  menú desde Shopify (`getMenu`) con fallback `NUEVOS LLEGADOS, HOMBRES, MUJERES, MARCAS, REBAJAS`
-  → `/search` y `/search/[collection]`; buscador oscuro, iconos Perfil/Favoritos, `<CartModal />`.
-- **Home** `app/page.tsx`: `components/hero.tsx` (fondo `grayscale blur-[4px]`, “SÉ ÚNICO.”,
-  CTA “Explorar Todo” → `/search`, stack rotativo de 3 zapatillas con _peek_ a la derecha en
-  `hero-client.tsx`), `components/carousel.tsx` (server) + `carousel-client.tsx` (Embla, loop).
-- **Footer** `components/layout/footer.tsx`: dark, sin “Deploy on Vercel”, enlaces de marca,
-  envíos/devoluciones, redes `@sassy.snkrs`.
-- **Catálogo** `app/search/layout.tsx`, `app/search/page.tsx`, `app/search/[collection]/page.tsx`:
-  filtros en paneles de cristal (Colecciones izq., Ordenar der.) sobre formas `clip-path`
-  en esquinas opuestas; grilla con `ProductGridItems` → `ProductCard`; paginación por cursor
-  Anterior/Siguiente (`?after=` / `?before=`) con `getProductsPage` / `getCollectionProductsPage`
-  y `components/layout/search/pagination.tsx`. Cambiar de colección u orden reinicia el cursor.
+- **Navbar** `components/layout/navbar/index.tsx`: franja `announcement-bar.tsx` (ink), logo +
+  `SASSY.` en display, menú Shopify con `FALLBACK_MENU`, `nav-links.tsx` (activo por ruta + query;
+  Rebajas en signal), buscador subrayado, Mi cuenta (cuentas de cliente Shopify), `<CartModal />`.
+- **Home** `app/page.tsx`: `hero.tsx` → `hero-client.tsx` (3 destacados de
+  `hidden-homepage-featured-items`, stack con peek, autoplay 6s con barra de progreso, pausa en
+  hover/focus y con reduced-motion) · `marquee.tsx` · `home/category-tiles.tsx` (Hombres, Mujeres,
+  Rebajas, Ediciones limitadas: `HOME_CATEGORIES`) · `carousel.tsx` → `carousel-client.tsx` (Embla,
+  `hidden-homepage-carousel`) · `home/brand-story.tsx` · `home/sale-row.tsx` (colección `rebajas`).
+- **Catálogo** `app/search/*`: `layout/search/catalog-header.tsx` (migas, título display, píldoras
+  de colección `collection-pills*.tsx` y `sort-select.tsx`), grilla `ProductGridItems`, paginación
+  por cursor (`?after=`/`?before=`); cambiar colección u orden reinicia el cursor.
+- **Producto** `app/product/[handle]/page.tsx`: galería 4:5 con miniaturas, info sticky
+  (marca → `/marcas/[vendor]`, precio con tachado, tallas en grilla, opciones de un solo valor
+  se muestran como dato y se dan por elegidas en `add-to-cart.tsx`), acordeones, relacionados.
+- **Carro** `components/cart/modal.tsx`: drawer claro; lógica y Server Actions intactas.
+- **Marcas** `app/marcas/page.tsx` y `app/marcas/[vendor]/page.tsx` (agrupa `getProducts` por `vendor`).
+- **Ayuda** `app/ayuda/page.tsx` (#envios, #cambios, #autenticidad, #vender) — textos base a validar.
+- **Footer** `components/layout/footer.tsx` (ink, columnas Tienda/Ayuda/Cuenta, wordmark gigante).
+- `app/not-found.tsx` y `app/error.tsx` con el mismo lenguaje.
+
+## Datos en Shopify (tienda `sassy-sneakers-axlmf8dk`)
+
+- Catálogo genérico "Footwear Index" (27 productos, mock.shop) publicado en Online Store y Headless.
+- Colecciones: `hombres`, `mujeres`, `rebajas` (7 productos con `compareAtPrice`),
+  `sneakers-and-trainers` (Zapatillas), `streetwear-footwear` (Calzado urbano),
+  `editorial-edge-originals` (Ediciones limitadas), `hidden-homepage-featured-items`,
+  `hidden-homepage-carousel`. Las `hidden-*` no salen en el catálogo.
+- El fragmento de producto incluye `vendor` y `compareAtPriceRange`/`compareAtPrice` (campos
+  opcionales agregados; firmas de funciones sin cambios).
 
 ## Convenciones de código
 
@@ -88,11 +107,10 @@ flotantes en píldora de Vercel (`components/label.tsx`) en vistas nuevas.
 
 ## Estado (actualizar al cerrar cada sesión)
 
-- [x] Tema dark global, utilidades glass, `ProductCard`, grilla, paginación por cursor, layout `/search`.
-- [x] Navbar: logo `public/logo-SS.png` (recreado desde el avatar de IG: Bebas Neue sobre
-      círculo negro; reemplazar por el original si aparece) vía `components/logo-mark.tsx`,
-      franja `announcement-bar.tsx` con sellos de IG, menú Shopify con `FALLBACK_MENU`
-      (`lib/constants.ts`), `nav-links.tsx` (client, estado activo), buscador y menú móvil
-      oscuros. Favoritos/Perfil son iconos deshabilitados ("próximamente") hasta tener rutas.
-- [ ] Hero con stack rotativo · carrusel Embla (`pnpm add embla-carousel-react`) · footer.
-- [ ] Página de producto y carrito re-estilizados (siguen con `GridTileImage` del template).
+- [x] Sistema "Gallery" claro reemplaza dark/glass en todo el sitio.
+- [x] Home completa: hero con stack rotativo, marquee, categorías, carrusel Embla, marca, rebajas, footer.
+- [x] Catálogo con píldoras/orden, producto, carro, Marcas, Ayuda, 404 y error re-estilizados.
+- [x] Colecciones faltantes creadas en Shopify (Mujeres/Rebajas daban 404).
+- [ ] Revisar textos de `/ayuda` con las políticas reales y traducir descripciones de productos.
+- [ ] Reemplazar el catálogo genérico por el stock real (marcas reales → `/marcas` se arma solo).
+- [ ] Favoritos (requiere cuentas de cliente / almacenamiento).
