@@ -3,26 +3,46 @@
 import clsx from "clsx";
 import { Menu } from "lib/shopify/types";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
+
+/** ¿El ítem del menú corresponde a la URL actual (ruta + query)? */
+export function useIsActive() {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  return (path: string) => {
+    const [itemPath, itemQuery] = path.split("?");
+    if (itemPath === "/") return pathname === "/";
+    const samePath =
+      pathname === itemPath || pathname.startsWith(`${itemPath}/`);
+    if (!samePath) return false;
+    if (!itemQuery) return itemPath !== "/search" || !searchParams.size;
+    const wanted = new URLSearchParams(itemQuery);
+    return [...wanted.entries()].every(([k, v]) => searchParams.get(k) === v);
+  };
+}
 
 export function NavLinks({ menu }: { menu: Menu[] }) {
-  const pathname = usePathname();
+  const isActive = useIsActive();
 
   return (
-    <ul className="hidden items-center gap-6 md:flex">
+    <ul className="flex items-center gap-7">
       {menu.map((item) => {
-        const active = pathname === item.path.split("?")[0];
+        const active = isActive(item.path);
+        const sale = item.path.includes("rebajas");
         return (
           <li key={item.title}>
             <Link
               href={item.path}
               prefetch={true}
+              aria-current={active ? "page" : undefined}
               className={clsx(
-                "relative py-1 text-xs font-medium uppercase tracking-widest transition duration-300 ease-out",
-                "after:absolute after:-bottom-0.5 after:left-0 after:h-px after:w-full after:origin-left after:bg-white after:transition-transform after:duration-300 motion-reduce:after:transition-none",
+                "relative py-2 text-[13px] font-medium tracking-tight uppercase transition-colors duration-300 ease-out",
+                "after:absolute after:bottom-0 after:left-0 after:h-[1.5px] after:w-full after:origin-left after:bg-current after:transition-transform after:duration-300 motion-reduce:after:transition-none",
                 active
-                  ? "text-white after:scale-x-100"
-                  : "text-neutral-400 after:scale-x-0 hover:text-white hover:after:scale-x-100",
+                  ? "after:scale-x-100"
+                  : "after:scale-x-0 hover:after:scale-x-100",
+                sale ? "text-signal" : "text-ink",
               )}
             >
               {item.title}

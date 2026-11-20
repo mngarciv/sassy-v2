@@ -38,14 +38,14 @@ export default function Pagination({
       : null;
 
   const base =
-    "glass inline-flex items-center gap-2 rounded-full px-5 py-3 font-mono text-[11px] tracking-widest uppercase transition-colors duration-300";
-  const enabled = "text-white hover:border-white/30 hover:bg-white/10";
-  const disabled = "cursor-not-allowed text-neutral-600";
+    "eyebrow inline-flex h-12 items-center gap-2 border px-6 transition-colors duration-300";
+  const enabled = "border-ink text-ink hover:bg-ink hover:text-paper";
+  const disabled = "cursor-not-allowed border-ink/15 text-ink/30";
 
   return (
     <nav
       aria-label="Paginación"
-      className="mt-12 flex items-center justify-center gap-3"
+      className="mt-16 flex items-center justify-center gap-3 border-t border-ink/15 pt-10"
     >
       {prev ? (
         <Link href={prev} className={clsx(base, enabled)} rel="prev">

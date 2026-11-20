@@ -24,11 +24,7 @@ export function LogoMark({
       height={px}
       sizes={`${px}px`}
       priority
-      className={clsx(
-        "rounded-full ring-1 ring-white/15",
-        sizeClass,
-        className,
-      )}
+      className={clsx("rounded-full ring-1 ring-ink/10", sizeClass, className)}
     />
   );
 }

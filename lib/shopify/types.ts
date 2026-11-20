@@ -88,6 +88,8 @@ export type ProductVariant = {
     value: string;
   }[];
   price: Money;
+  /** Precio antes de rebaja (null si no está en oferta). */
+  compareAtPrice?: Money | null;
 };
 
 export type SEO = {
@@ -120,12 +122,18 @@ export type ShopifyProduct = {
   handle: string;
   availableForSale: boolean;
   title: string;
+  /** Marca (campo `vendor` de Shopify). */
+  vendor?: string;
   description: string;
   descriptionHtml: string;
   options: ProductOption[];
   priceRange: {
     maxVariantPrice: Money;
     minVariantPrice: Money;
+  };
+  /** Rango de precios "antes" (0.0 cuando no hay rebaja). */
+  compareAtPriceRange?: {
+    maxVariantPrice: Money;
   };
   variants: Connection<ProductVariant>;
   featuredImage: Image;

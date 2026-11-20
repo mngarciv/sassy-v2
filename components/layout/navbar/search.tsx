@@ -5,7 +5,7 @@ import Form from "next/form";
 import { useSearchParams } from "next/navigation";
 
 const inputClass =
-  "w-full rounded-full border border-white/10 bg-white/5 py-2.5 pl-4 pr-10 text-base text-white placeholder:text-neutral-500 transition duration-300 ease-out outline-none hover:border-white/30 focus:border-white/40 focus:bg-white/10 md:text-sm";
+  "w-full border-0 border-b border-ink/25 bg-transparent py-2 pr-8 pl-0 text-base text-ink placeholder:text-muted transition-colors duration-300 ease-out outline-none hover:border-ink/60 focus:border-ink focus:ring-0 md:text-sm";
 
 export default function Search() {
   const searchParams = useSearchParams();
@@ -20,14 +20,18 @@ export default function Search() {
         key={searchParams?.get("q")}
         type="search"
         name="q"
-        placeholder="Buscar zapatillas…"
+        placeholder="Buscar modelo, marca…"
         autoComplete="off"
         defaultValue={searchParams?.get("q") || ""}
         className={inputClass}
       />
-      <div className="pointer-events-none absolute right-0 top-0 mr-4 flex h-full items-center text-neutral-400">
-        <MagnifyingGlassIcon className="h-4" />
-      </div>
+      <button
+        type="submit"
+        aria-label="Buscar"
+        className="absolute top-0 right-0 flex h-full items-center text-ink"
+      >
+        <MagnifyingGlassIcon className="h-4" strokeWidth={2} />
+      </button>
     </Form>
   );
 }
@@ -37,11 +41,11 @@ export function SearchSkeleton() {
     <form className="relative w-full">
       <input
         aria-label="Buscar productos"
-        placeholder="Buscar zapatillas…"
+        placeholder="Buscar modelo, marca…"
         className={inputClass}
       />
-      <div className="pointer-events-none absolute right-0 top-0 mr-4 flex h-full items-center text-neutral-400">
-        <MagnifyingGlassIcon className="h-4" />
+      <div className="pointer-events-none absolute top-0 right-0 flex h-full items-center text-ink">
+        <MagnifyingGlassIcon className="h-4" strokeWidth={2} />
       </div>
     </form>
   );

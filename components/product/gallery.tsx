@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
-import { GridTileImage } from "components/grid/tile";
+import clsx from "clsx";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -26,64 +26,34 @@ export function Gallery({
   const previousImageIndex =
     imageIndex === 0 ? images.length - 1 : imageIndex - 1;
 
-  const buttonClassName =
-    "h-full px-6 transition-all ease-in-out hover:scale-110 hover:text-black dark:hover:text-white flex items-center justify-center";
+  const arrow =
+    "flex h-11 w-11 items-center justify-center bg-paper text-ink transition-colors duration-300 hover:bg-ink hover:text-paper";
 
   return (
-    <form>
-      <div className="relative aspect-square h-full max-h-[550px] w-full overflow-hidden">
-        {images[imageIndex] && (
-          <Image
-            className="h-full w-full object-contain"
-            fill
-            sizes="(min-width: 1024px) 66vw, 100vw"
-            alt={images[imageIndex]?.altText as string}
-            src={images[imageIndex]?.src as string}
-            priority={true}
-          />
-        )}
-
-        {images.length > 1 ? (
-          <div className="absolute bottom-[15%] flex w-full justify-center">
-            <div className="mx-auto flex h-11 items-center rounded-full border border-white bg-neutral-50/80 text-neutral-500 backdrop-blur-sm dark:border-black dark:bg-neutral-900/80">
-              <button
-                formAction={() => updateImage(previousImageIndex.toString())}
-                aria-label="Previous product image"
-                className={buttonClassName}
-              >
-                <ArrowLeftIcon className="h-5" />
-              </button>
-              <div className="mx-1 h-6 w-px bg-neutral-500"></div>
-              <button
-                formAction={() => updateImage(nextImageIndex.toString())}
-                aria-label="Next product image"
-                className={buttonClassName}
-              >
-                <ArrowRightIcon className="h-5" />
-              </button>
-            </div>
-          </div>
-        ) : null}
-      </div>
-
+    <form className="flex flex-col-reverse gap-3 md:flex-row">
       {images.length > 1 ? (
-        <ul className="my-12 flex items-center flex-wrap justify-center gap-2 overflow-auto py-1 lg:mb-0">
+        <ul className="no-scrollbar flex gap-2 overflow-x-auto md:w-20 md:flex-none md:flex-col md:overflow-visible">
           {images.map((image, index) => {
             const isActive = index === imageIndex;
-
             return (
-              <li key={image.src} className="h-20 w-20">
+              <li key={image.src} className="w-16 flex-none md:w-full">
                 <button
                   formAction={() => updateImage(index.toString())}
-                  aria-label="Select product image"
-                  className="h-full w-full"
+                  aria-label={`Ver imagen ${index + 1}`}
+                  aria-current={isActive}
+                  className={clsx(
+                    "relative block aspect-[4/5] w-full overflow-hidden bg-paper-2 transition-opacity",
+                    isActive
+                      ? "ring-1 ring-ink ring-offset-2 ring-offset-paper"
+                      : "opacity-60 hover:opacity-100",
+                  )}
                 >
-                  <GridTileImage
+                  <Image
                     alt={image.altText}
                     src={image.src}
-                    width={80}
-                    height={80}
-                    active={isActive}
+                    fill
+                    sizes="80px"
+                    className="object-cover"
                   />
                 </button>
               </li>
@@ -91,6 +61,46 @@ export function Gallery({
           })}
         </ul>
       ) : null}
+
+      <div className="relative aspect-[4/5] w-full overflow-hidden bg-paper-2">
+        {images[imageIndex] && (
+          <Image
+            key={images[imageIndex]?.src}
+            className="animate-fadeIn object-cover"
+            fill
+            sizes="(min-width: 1024px) 55vw, 100vw"
+            alt={images[imageIndex]?.altText as string}
+            src={images[imageIndex]?.src as string}
+            priority={true}
+          />
+        )}
+
+        {images.length > 1 ? (
+          <div className="absolute right-4 bottom-4 flex gap-1">
+            <button
+              formAction={() => updateImage(previousImageIndex.toString())}
+              aria-label="Imagen anterior"
+              className={arrow}
+            >
+              <ArrowLeftIcon className="h-4" />
+            </button>
+            <button
+              formAction={() => updateImage(nextImageIndex.toString())}
+              aria-label="Imagen siguiente"
+              className={arrow}
+            >
+              <ArrowRightIcon className="h-4" />
+            </button>
+          </div>
+        ) : null}
+
+        {images.length > 1 ? (
+          <span className="eyebrow absolute top-4 left-4 bg-paper px-2 py-1">
+            {String(imageIndex + 1).padStart(2, "0")} /{" "}
+            {String(images.length).padStart(2, "0")}
+          </span>
+        ) : null}
+      </div>
     </form>
   );
 }

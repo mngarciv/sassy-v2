@@ -1,19 +1,18 @@
 import clsx from "clsx";
-import Price from "components/price";
+import { formatMoney } from "components/price";
+import { getDiscount } from "lib/product-utils";
 import type { Product } from "lib/shopify/types";
 import Image from "next/image";
 import Link from "next/link";
 
 /**
- * Tarjeta editorial estándar de SASSY SNKRS.
- * Server Component (sin estado): reutilizable en grilla, carrusel y relacionados.
- * - Caja de imagen aspect-[4/5] con degradado de estudio.
- * - Zapatilla silueteada (object-contain) con sombra 3D.
- * - Título y precio FUERA de la caja, abajo.
+ * Tarjeta de producto SASSY (Server Component, sin estado).
+ * Foto de estudio 4:5 a sangre (object-cover); marca, nombre y precio
+ * debajo y alineados a la izquierda. Reutilizable en grilla, carrusel y relacionados.
  */
 export function ProductCard({
   product,
-  sizes = "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw",
+  sizes = "(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 50vw",
   priority = false,
   className,
 }: {
@@ -25,6 +24,9 @@ export function ProductCard({
   const { minVariantPrice, maxVariantPrice } = product.priceRange;
   const hasRange = minVariantPrice.amount !== maxVariantPrice.amount;
   const soldOut = !product.availableForSale;
+  const discount = getDiscount(product);
+  const compareAt = product.compareAtPriceRange?.maxVariantPrice;
+  const secondImage = product.images[1];
 
   return (
     <Link
@@ -32,18 +34,7 @@ export function ProductCard({
       prefetch={true}
       className={clsx("group block w-full", className)}
     >
-      <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl border border-white/5 bg-gradient-to-b from-neutral-800 to-neutral-950 transition-colors duration-300 ease-out group-hover:border-white/20">
-        {/* Halo de luz de estudio */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 h-2/3 bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.08),transparent_70%)]"
-        />
-        {/* Sombra de piso */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-[18%] bottom-[16%] h-6 rounded-[50%] bg-black/60 blur-xl transition-transform duration-500 ease-out group-hover:scale-x-90"
-        />
-
+      <div className="relative aspect-[4/5] w-full overflow-hidden bg-paper-2">
         {product.featuredImage?.url ? (
           <Image
             src={product.featuredImage.url}
@@ -52,39 +43,67 @@ export function ProductCard({
             sizes={sizes}
             priority={priority}
             className={clsx(
-              "object-contain p-8 drop-shadow-[0_25px_25px_rgba(0,0,0,0.6)] transition-transform duration-500 ease-out group-hover:-translate-y-1 group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:transform-none",
-              { "opacity-50 grayscale": soldOut },
+              "object-cover transition duration-700 ease-out group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100",
+              { "opacity-60 grayscale": soldOut },
+              { "group-hover:opacity-0": secondImage },
             )}
           />
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center font-mono text-[10px] tracking-widest text-neutral-600 uppercase">
+          <div className="eyebrow absolute inset-0 flex items-center justify-center text-muted">
             Sin imagen
           </div>
         )}
-
-        {soldOut ? (
-          <span className="glass absolute top-4 left-4 rounded-full px-3 py-1 font-mono text-[10px] tracking-widest text-neutral-300 uppercase">
-            Agotado
-          </span>
+        {secondImage ? (
+          <Image
+            src={secondImage.url}
+            alt=""
+            aria-hidden
+            fill
+            sizes={sizes}
+            className="object-cover opacity-0 transition duration-700 ease-out group-hover:opacity-100 motion-reduce:transition-none"
+          />
         ) : null}
-      </div>
 
-      <div className="mt-4 flex items-start justify-between gap-4 px-1">
-        <h3 className="line-clamp-2 text-sm leading-snug font-medium tracking-tight text-white">
-          {product.title}
-        </h3>
-        <div className="flex shrink-0 items-baseline gap-1 text-sm text-neutral-400">
-          {hasRange ? (
-            <span className="font-mono text-[10px] tracking-widest uppercase">
-              Desde
+        <div className="absolute top-3 left-3 flex flex-col items-start gap-1.5">
+          {discount && !soldOut ? (
+            <span className="eyebrow bg-signal px-2 py-1 text-ink">
+              −{discount}%
             </span>
           ) : null}
-          <Price
-            amount={minVariantPrice.amount}
-            currencyCode={minVariantPrice.currencyCode}
-            currencyCodeClassName="hidden"
-          />
+          {soldOut ? (
+            <span className="eyebrow bg-paper px-2 py-1 text-ink">Agotado</span>
+          ) : null}
         </div>
+
+        <span
+          aria-hidden
+          className="eyebrow absolute right-3 bottom-3 translate-y-2 bg-paper px-2 py-1 text-ink opacity-0 transition duration-300 ease-out group-hover:translate-y-0 group-hover:opacity-100 motion-reduce:transition-none"
+        >
+          Ver par →
+        </span>
+      </div>
+
+      <div className="mt-3 space-y-1">
+        {product.vendor ? (
+          <p className="eyebrow truncate text-muted">{product.vendor}</p>
+        ) : null}
+        <h3 className="line-clamp-1 text-sm font-medium tracking-tight">
+          {product.title}
+        </h3>
+        <p
+          className="flex items-baseline gap-2 text-sm"
+          suppressHydrationWarning
+        >
+          {hasRange ? <span className="text-muted">Desde</span> : null}
+          <span className={clsx(discount && "text-signal")}>
+            {formatMoney(minVariantPrice.amount, minVariantPrice.currencyCode)}
+          </span>
+          {discount && compareAt ? (
+            <span className="text-muted line-through">
+              {formatMoney(compareAt.amount, compareAt.currencyCode)}
+            </span>
+          ) : null}
+        </p>
       </div>
     </Link>
   );

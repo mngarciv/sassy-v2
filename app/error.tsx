@@ -2,18 +2,23 @@
 
 export default function Error({ reset }: { reset: () => void }) {
   return (
-    <div className="mx-auto my-4 flex max-w-xl flex-col rounded-lg border border-neutral-200 bg-white p-8 md:p-12 dark:border-neutral-800 dark:bg-black">
-      <h2 className="text-xl font-bold">Oh no!</h2>
-      <p className="my-2">
-        There was an issue with our storefront. This could be a temporary issue,
-        please try your action again.
+    <section className="shell flex min-h-[60vh] flex-col justify-center py-24">
+      <p className="eyebrow text-muted">Algo falló</p>
+      <h2 className="font-display mt-4 text-6xl md:text-8xl">
+        Se nos cayó
+        <br />
+        el par<span className="text-signal">.</span>
+      </h2>
+      <p className="mt-6 max-w-md text-muted">
+        Hubo un problema al cargar la tienda. Suele ser momentáneo: inténtalo de
+        nuevo.
       </p>
       <button
-        className="mx-auto mt-4 flex w-full items-center justify-center rounded-full bg-blue-600 p-4 tracking-wide text-white hover:opacity-90"
+        className="mt-10 inline-flex h-14 w-fit items-center bg-ink px-8 text-sm font-medium text-paper transition-colors hover:bg-ink-2"
         onClick={() => reset()}
       >
-        Try Again
+        Reintentar
       </button>
-    </div>
+    </section>
   );
 }
