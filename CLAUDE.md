@@ -89,7 +89,13 @@ esquinas rectas y un solo color de acento. Tokens en `@theme` de `app/globals.cs
 
 ## Datos en Shopify (tienda `sassy-sneakers-axlmf8dk`)
 
-- Catálogo genérico "Footwear Index" (27 productos, mock.shop) publicado en Online Store y Headless.
+- Catálogo de muestra: 27 modelos reales (Nike, Jordan, Nike SB, adidas, New Balance, Converse,
+  Vans, Puma, Salomon, Timberland, Dr. Martens, Birkenstock) con precios en CLP y tallas US 7–11.
+  Las fotos son provisorias (estudio genérico de mock.shop, silueta parecida): reemplazarlas por
+  fotos propias del stock. Publicado en Online Store y Headless.
+- Moneda: los montos se cargaron en pesos; la moneda de la tienda se cambia a CLP en Shopify Admin
+  (Configuración → Datos de la tienda → Moneda). No hay API para cambiarla.
+- Copy: la tienda hace **compra y venta**; no ofrece permuta (no mencionarla).
 - Colecciones: `hombres`, `mujeres`, `rebajas` (7 productos con `compareAtPrice`),
   `sneakers-and-trainers` (Zapatillas), `streetwear-footwear` (Calzado urbano),
   `editorial-edge-originals` (Ediciones limitadas), `hidden-homepage-featured-items`,
@@ -111,6 +117,7 @@ esquinas rectas y un solo color de acento. Tokens en `@theme` de `app/globals.cs
 - [x] Home completa: hero con stack rotativo, marquee, categorías, carrusel Embla, marca, rebajas, footer.
 - [x] Catálogo con píldoras/orden, producto, carro, Marcas, Ayuda, 404 y error re-estilizados.
 - [x] Colecciones faltantes creadas en Shopify (Mujeres/Rebajas daban 404).
-- [ ] Revisar textos de `/ayuda` con las políticas reales y traducir descripciones de productos.
-- [ ] Reemplazar el catálogo genérico por el stock real (marcas reales → `/marcas` se arma solo).
+- [ ] Revisar textos de `/ayuda` con las políticas reales.
+- [x] Catálogo con modelos reales y precios CLP; sin menciones a permuta.
+- [ ] Cambiar moneda de la tienda a CLP en Shopify Admin y reemplazar fotos provisorias por las propias.
 - [ ] Favoritos (requiere cuentas de cliente / almacenamiento).
