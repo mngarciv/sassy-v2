@@ -26,7 +26,7 @@ export const metadata = {
     template: `%s | ${SITE_NAME || "SASSY."}`,
   },
   description:
-    "Zapatillas originales y streetwear. Venta, compra y permuta con envíos a todo Chile y el mundo.",
+    "Zapatillas originales y streetwear. Compra y venta con envíos a todo Chile y el mundo.",
   robots: {
     follow: true,
     index: true,

@@ -8,7 +8,7 @@ import { Marquee } from "components/marquee";
 
 export const metadata = {
   description:
-    "Zapatillas originales y streetwear en Chile. Venta, compra y permuta con envíos a todo Chile y el mundo.",
+    "Zapatillas originales y streetwear en Chile. Compra y venta con envíos a todo Chile y el mundo.",
   openGraph: {
     type: "website",
   },
@@ -22,7 +22,7 @@ export default function HomePage() {
         items={[
           "100% originales",
           "Envíos a todo Chile",
-          "Venta · Compra · Permuta",
+          "Compra y venta",
           "+3000 ventas",
           "Stock limitado",
         ]}

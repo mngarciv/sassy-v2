@@ -5,7 +5,7 @@ import { BRAND } from "lib/constants";
 export const metadata = {
   title: "Ayuda",
   description:
-    "Envíos, cambios, autenticidad y cómo vender o permutar tu par en SASSY SNKRS.",
+    "Envíos, cambios, autenticidad y cómo vender tu par en SASSY SNKRS.",
 };
 
 /*
@@ -39,9 +39,9 @@ const SECTIONS = [
   },
   {
     id: "vender",
-    title: "Vende o permuta tu par",
+    title: "Vende tu par",
     body: [
-      `Mándanos fotos del par, talla y estado por DM a ${BRAND.handle}. Te respondemos con una oferta de compra o de permuta por otro par del stock.`,
+      `Mándanos fotos del par, talla y estado por DM a ${BRAND.handle}. Te respondemos con una oferta de compra.`,
     ],
   },
 ];

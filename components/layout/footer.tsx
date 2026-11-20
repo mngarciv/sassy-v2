@@ -8,7 +8,7 @@ const HELP = [
   { title: "Envíos", path: "/ayuda#envios" },
   { title: "Cambios y devoluciones", path: "/ayuda#cambios" },
   { title: "Autenticidad", path: "/ayuda#autenticidad" },
-  { title: "Vende o permuta tu par", path: "/ayuda#vender" },
+  { title: "Vende tu par", path: "/ayuda#vender" },
 ];
 
 function Column({
@@ -44,8 +44,8 @@ export default function Footer() {
             </span>
           </div>
           <p className="mt-6 max-w-sm text-sm leading-relaxed text-paper/60">
-            Zapatillas originales y streetwear. Venta, compra y permuta con
-            envíos a todo Chile y el mundo.
+            Zapatillas originales y streetwear. Compra y venta con envíos a todo
+            Chile y el mundo.
           </p>
           <a
             href={BRAND.instagram}

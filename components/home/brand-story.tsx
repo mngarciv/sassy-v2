@@ -16,8 +16,8 @@ const STEPS = [
     body: `Cotiza tu par por mensaje directo en ${BRAND.handle}.`,
   },
   {
-    title: "Permuta",
-    body: "Cambia tu par por otro del stock. Conversamos la diferencia por DM.",
+    title: "Recibe",
+    body: "Despachamos a todo Chile y el mundo, con seguimiento de tu pedido.",
   },
 ];
 

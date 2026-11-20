@@ -9,7 +9,7 @@ import { VariantSelector } from "./variant-selector";
 const TRUST = [
   "Producto 100% original",
   "Envíos a todo Chile y el mundo",
-  "Aceptamos tu par en parte de pago",
+  "Pago seguro vía Shopify",
 ];
 
 function Detail({

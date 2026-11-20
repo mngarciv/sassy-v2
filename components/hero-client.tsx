@@ -93,8 +93,8 @@ export function HeroClient({ slides }: { slides: HeroSlide[] }) {
           </h1>
 
           <p className="mt-8 max-w-md text-base leading-relaxed text-paper/70 md:text-lg">
-            Zapatillas originales y pares difíciles de encontrar. Venta, compra
-            y permuta con despacho a todo Chile y el mundo.
+            Zapatillas originales y pares difíciles de encontrar. Compra y venta
+            con despacho a todo Chile y el mundo.
           </p>
 
           <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">

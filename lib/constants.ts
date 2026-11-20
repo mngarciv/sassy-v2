@@ -69,7 +69,7 @@ export const BRAND = {
   account: "https://shopify.com/86150217957/account",
   claims: [
     "100% originales",
-    "Venta · Compra · Permuta",
+    "Compra y venta",
     "Envíos a todo Chile y el mundo",
     "+3000 ventas · 6 años",
   ],
