@@ -87,14 +87,18 @@ esquinas rectas y un solo color de acento. Tokens en `@theme` de `app/globals.cs
 - **Footer** `components/layout/footer.tsx` (ink, columnas Tienda/Ayuda/Cuenta, wordmark gigante).
 - `app/not-found.tsx` y `app/error.tsx` con el mismo lenguaje.
 
-## Datos en Shopify (tienda `sassy-sneakers-axlmf8dk`)
+## Datos en Shopify (tienda `24xq-wrumga-xr.myshopify.com`)
+
+- Tienda real (en prueba gratuita, Chile, CLP, precios con IVA incluido). Reemplaza a la tienda de
+  desarrollo `sassy-sneakers-axlmf8dk`, que no podía pasar a plan pagado (se puede eliminar).
+- Los productos se publican en los canales **Online Store** y **Headless**; Vercel usa el token
+  público del canal Headless (`SHOPIFY_STORE_DOMAIN` / `SHOPIFY_STOREFRONT_ACCESS_TOKEN`).
 
 - Catálogo de muestra: 27 modelos reales (Nike, Jordan, Nike SB, adidas, New Balance, Converse,
   Vans, Puma, Salomon, Timberland, Dr. Martens, Birkenstock) con precios en CLP y tallas US 7–11.
   Las fotos son provisorias (estudio genérico de mock.shop, silueta parecida): reemplazarlas por
   fotos propias del stock. Publicado en Online Store y Headless.
-- Moneda: los montos se cargaron en pesos; la moneda de la tienda se cambia a CLP en Shopify Admin
-  (Configuración → Datos de la tienda → Moneda). No hay API para cambiarla.
+- Moneda: CLP (montos en pesos). La moneda de la tienda solo se cambia en Shopify Admin, no por API.
 - Copy: la tienda hace **compra y venta**; no ofrece permuta (no mencionarla).
 - Colecciones: `hombres`, `mujeres`, `rebajas` (7 productos con `compareAtPrice`),
   `sneakers-and-trainers` (Zapatillas), `streetwear-footwear` (Calzado urbano),
@@ -119,5 +123,9 @@ esquinas rectas y un solo color de acento. Tokens en `@theme` de `app/globals.cs
 - [x] Colecciones faltantes creadas en Shopify (Mujeres/Rebajas daban 404).
 - [ ] Revisar textos de `/ayuda` con las políticas reales.
 - [x] Catálogo con modelos reales y precios CLP; sin menciones a permuta.
-- [ ] Cambiar moneda de la tienda a CLP en Shopify Admin y reemplazar fotos provisorias por las propias.
+- [x] Tienda migrada a `24xq-wrumga-xr` (CLP, Chile) y conectada a Vercel.
+- [ ] Plan pagado (Basic) + Mercado Pago; luego Webpay (Transbank) y Fintoc/Khipu.
+- [ ] Inicio de actividades SII y boleta electrónica (Bsale/OpenFactura).
+- [ ] Compra de prueba completa (checkout protegido con contraseña hasta elegir plan).
+- [ ] Reemplazar fotos provisorias por las propias y activar control de inventario (1 par por talla).
 - [ ] Favoritos (requiere cuentas de cliente / almacenamiento).
